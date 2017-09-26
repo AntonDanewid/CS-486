@@ -18,6 +18,7 @@ public class City implements Comparable {
 		this.x = x; 
 		this.y = y; 
 		this.name = name;
+		//parents.add(name);
 		
 	}
 

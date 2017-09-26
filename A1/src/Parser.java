@@ -38,14 +38,18 @@ public class Parser {
 			s = fullString.substring(0, n);
 			t = fullString.substring(n + 1, fullString.length());
 		}
+		
+		for(City c: result) {
+			c.setHCost(c.distanceTo(result.getFirst()));
+		}
 		HashMap<City, ArrayList<City>> graph = new HashMap<City, ArrayList<City>>();
-
+		City start = result.get(0);
 		for (City c : result) {
 			ArrayList<City> neighbours = new ArrayList<City>();
 			for (City q : result) {
 				if (!c.equals(q)) {
 					City toAdd = new City(q.getName(), q.getX(), q.getY());
-					toAdd.setHCost(q.getHCost());
+					toAdd.setHCost(c.getHCost());
 					neighbours.add(q);
 
 				}
