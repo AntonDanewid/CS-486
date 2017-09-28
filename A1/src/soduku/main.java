@@ -3,8 +3,10 @@ package soduku;
 public class main {
 
 	public static void main(String[] args) {
+		Solver solver = new Solver();
 		Parser parser = new Parser();
-		parser.parse("problems\\5\\5.txt");
+		solver.backSolve(parser.parse("problems\\68\\6.sd"));
+		
 	}
 	
 }

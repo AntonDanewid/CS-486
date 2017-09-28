@@ -4,13 +4,33 @@ public class Solver {
 
 	
 	private int[][] board;
+	private int nbr = 0;
 	
-	public boolean backSolve(int[][] board) {
+	
+	
+	public void backSolve(int[][] board) {
 		this.board = board;
-		int nbr = 0;
+		nbr = 0;
+		boolean res = solveBack(board);
+		if(!res) {
+			System.out.println("no solution found");
+		}
+	}
+
+
+
+	private boolean solveBack(int[][] board) {
 		int[] unAssigned = new int[2];
 		
 		if(!findUnassigned(unAssigned)) {
+			System.out.println("YES");
+			for(int i = 0; i < 9; i ++) {
+				for(int j = 0; j < 9; j++) {
+					System.out.print(board[i][j] + " ");
+					
+				}
+				System.out.println();
+			}
 			return true; 
 		}
 		int row = unAssigned[0];
@@ -21,7 +41,8 @@ public class Solver {
 				
 				
 				board[row][col] = i;
-				if(backSolve(board)) {
+				nbr++;
+				if(solveBack(board)) {
 					return true;
 				}
 				board[row][col] = 0;
