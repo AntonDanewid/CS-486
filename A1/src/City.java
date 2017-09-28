@@ -14,6 +14,9 @@ public class City implements Comparable {
 	private double h; 
 	private double fCost; 
 	
+	
+	
+	
 	public City(String name, int x, int y) {
 		this.x = x; 
 		this.y = y; 
@@ -88,10 +91,7 @@ public class City implements Comparable {
 //		this.parent = parent; 
 //	}
 //	
-	public void setTarget(City c) {
-		h = distanceTo(c);
-	}
-	
+
 	public String toString() {
 		return name;
 	}

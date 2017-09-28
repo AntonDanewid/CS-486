@@ -30,7 +30,7 @@ public class Parser {
 			int xCord = Integer.parseInt(dataline[1]);
 			int yCord = Integer.parseInt(dataline[2]);
 
-			System.out.println(dataline[0] + " " + xCord + " " + yCord);
+			//System.out.println(dataline[0] + " " + xCord + " " + yCord);
 
 			result.add(new City(dataline[0], xCord, yCord));
 
@@ -57,7 +57,7 @@ public class Parser {
 			}
 			graph.put(c, neighbours);
 		}
-		System.out.println(		graph.toString());
+		//System.out.println(		graph.toString());
 		return graph;
 	}
 }

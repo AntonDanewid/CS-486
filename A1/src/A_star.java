@@ -41,6 +41,7 @@ public class A_star {
 		PriorityQueue<City> open = new PriorityQueue<City>();
 		open.add(start);
 		
+		LinkedList<City> closed = new LinkedList<City>();
 		//System.out.println(list.containsKey(start));
 		int nodes = 0;
 		
@@ -98,9 +99,9 @@ public class A_star {
 						if(newSuccessor.getName().equals("A")) {
 							System.out.println("ERROR " + current.getParents());
 						}
-						if(successor.getHCost() == 0) {
-							System.out.println("ERROR IN H COST");
-						}
+//						if(successor.getHCost() == 0) {
+//							System.out.println("ERROR IN H COST");
+//						}
 						newSuccessor.setHCost(successor.getHCost());
 //						if(newSuccessor.getName().equals("E")) {
 //							System.out.println("ITS FUCKING IN");
@@ -111,6 +112,7 @@ public class A_star {
 						}
 					}
 				}
+				closed.add(current);
 
 			}
 
