@@ -8,6 +8,8 @@ import java.util.Scanner;
 
 public class Parser {
 
+	
+	/*Parse the city file and put it into a HashMap*/
 	public HashMap<City, ArrayList<City>> parser(String filepath) {
 
 		String fullString = null;
@@ -41,7 +43,9 @@ public class Parser {
 		}
 		
 		for(City c: result) {
-			c.setHCost(c.distanceTo(result.getFirst()));
+			//c.setHCost(c.distanceTo(result.getFirst()));
+			c.setHCost(0);
+
 		}
 		HashMap<City, ArrayList<City>> graph = new HashMap<City, ArrayList<City>>();
 		City start = result.get(0);
@@ -50,7 +54,8 @@ public class Parser {
 			for (City q : result) {
 				if (!c.equals(q)) {
 					City toAdd = new City(q.getName(), q.getX(), q.getY());
-					toAdd.setHCost(c.getHCost());
+					//toAdd.setHCost(c.getHCost());
+					toAdd.setHCost(0);
 					neighbours.add(q);
 
 				}

@@ -19,9 +19,10 @@ public class main {
 //			totNodes = 0;
 //
 	//	}
+		 algo.Pathfind(parser.parser("randTSP\\5\\instance_10.txt"));
+
 		long timeEnd = System.currentTimeMillis();
-		 algo.Pathfind(parser.parser("randTSP\\10\\instance_10.txt"));
-		
+
 		System.out.println(list);
 		long runningTime = timeEnd - timeStart;
 		System.out.println("Running time was ");

@@ -20,6 +20,8 @@ public class A_star {
 		int nbrOfCities = list.size();
 		int count = 0;
 		
+		
+		//If there is only one city
 		if(list.size() == 1) {
 			System.out.println("A");
 			return 1;
@@ -28,7 +30,7 @@ public class A_star {
 		City testC= null;
 		City start = null;
 		
-
+		//Find the starting City A
 		for(City c: list.keySet()) {
 			if(c.getName().equals("A")) {
 				start = c; 
@@ -39,77 +41,82 @@ public class A_star {
 			
 		}
 		
+		//Put A in a priority queue, sorted by lowest FCost
 		PriorityQueue<City> open = new PriorityQueue<City>();
 		open.add(start);
 		
 		LinkedList<City> closed = new LinkedList<City>();
-		//System.out.println(list.containsKey(start));
+
+
+		
 		int nodes = 0;
 		
-		
-
+	
+	
 		while (!open.isEmpty())
 
 		{
 			current = open.poll();
-			//System.out.println(current.toString());
 			
 			
-//			for(City c: list.keySet()) {
-//				System.out.println(c.hashCode());
-//				
-//			}
-			
+			//If the current city has as many parents as there are cities, we only have to go back to the starting node.
 			if (current.getParents().size() == nbrOfCities) {
-				//System.out.println("CURRENT PATH " + current.getParents().toString());
-				ArrayList<City> successorList = list.get(current);
 
+				ArrayList<City> successorList = list.get(current);
+				
+				//Find the start node.
 				for (City successor : successorList) {
-					//System.out.println("HÄR" +successor.toString());
+
 					if (successor.equals(start)) {
 						nodes++;
 
 						double gcost = current.distanceTo(successor) + current.getGCost();
 
-						// Lös gCost samt att parents läggs till på rätt sätt
 
+						
 						last = new City(successor.getName(), successor.getX(), successor.getY());
 						last.setGCost(gcost);
-						//System.out.println("HÄR" + current.getParents());
+
 						last.setParents(current.getParents());
 						last.getParents().add(last.getName());
-
+						
 						break;
 					}
 				}
 			} else {
+				//Get the current city's successors.
 				ArrayList<City> successorList = list.get(current);
-				//System.out.println(list.get(current));
-				//System.out.println(current.hashCode());
+				
+				//Go through each successor
 				for (City successor : successorList) {
+
+					//If they are not already a parent to the current city
 					if (!current.getParents().contains(successor.getName())) {
 						nodes++;
+						
+						//Create a new city object with the correct g, h, and f values. Put it in the prio queue. 
 						double gcost = current.getGCost() + current.distanceTo(successor);
 						City newSuccessor = new City(successor.getName(), successor.getX(), successor.getY());
-						//System.out.println(successor.getHCost());
-
 						newSuccessor.setParents(current.getParents());
 						newSuccessor.getParents().add(current.getName());
-						//newSuccessor.getParents().add(newSuccessor.getName());
 						newSuccessor.setGCost(gcost);
-						if(newSuccessor.getName().equals("A")) {
-							System.out.println("ERROR " + current.getParents());
-						}
-//						if(successor.getHCost() == 0) {
-//							System.out.println("ERROR IN H COST");
-//						}
+					
+						
+						
+						
+						
+						
 						newSuccessor.setHCost(successor.getHCost());
-//						if(newSuccessor.getName().equals("E")) {
-//							System.out.println("ITS FUCKING IN");
-//						}
+////						
+//						
+
+						
+						
+						//Special case 
 						open.add(newSuccessor);
 						if(newSuccessor.getParents().size() == nbrOfCities -1) {
 							newSuccessor.getParents().add(newSuccessor.getName());
+						
 						}
 					}
 				}
@@ -119,7 +126,7 @@ public class A_star {
 
 		}
 
-		
+	
 		System.out.println(last.getParents());
 
 		System.out.println("number of nodes is " + nodes);
@@ -127,14 +134,12 @@ public class A_star {
 		return nodes;
 	}
 
+	
+	//Prints the  last city's parents and g costs, reconstructing the path taken.
 	public void reconstructPath(City last) {
 		
-//		for(int i = last.getParents().size()- 1; i > -1; i--) {
-//			System.out.println(last.getParents().get(i));
-//			
-//		}
+
 		
-		//System.out.println("A");
 		for(String s: last.getParents()) {
 			System.out.println(s);
 		}
