@@ -23,6 +23,10 @@ public class Solver {
 
 
 	private boolean solveBack(int[][] board) {
+		if(nbr > 10000) {
+			return false;
+		}
+		
 		int[] unAssigned = new int[2];
 		
 		if(!findUnassigned(unAssigned)) {
@@ -143,13 +147,5 @@ public class Solver {
 			}
 		}
 		return false;
-	}
-	
-	
-	
-	
-	
-	
-	
-	
+	}	
 }

@@ -26,7 +26,7 @@ public class HeuristicSolve {
 		}
 
 		doFirstCheck();
-		// System.out.println("arraylist " + variables);
+		System.out.println("arraylist " + variables);
 		solve(variables);
 		System.out.println(nbr);
 
@@ -35,9 +35,13 @@ public class HeuristicSolve {
 	// Gör kopia på listorna så att concurrent issues undviks.
 	// Allt bör sedan vara klart.
 	private boolean solve(ArrayList<ArrayList<Integer>> list) {
+		if(nbr > 10000) {
+			return false;
+		}
 		int[] unAssigned = new int[2];
-
-		ArrayList<ArrayList<Integer>> backup = (ArrayList<ArrayList<Integer>>) list.clone();
+		int[] test = new int[2];
+		
+		ArrayList<ArrayList<Integer>> backup = Copy(list);
 
 		if (!findUnassigned(unAssigned)) {
 			// System.out.println("YES");
@@ -56,30 +60,19 @@ public class HeuristicSolve {
 		
 		int variable = findCell(backup);
 		if(variable == -1) {
-
-			for (int i = 0; i < 9; i++) {
-				for (int j = 0; j < 9; j++) {
-					System.out.print(board[i][j] + " ");
-					if(checkValid(i,j, board[i][j])) {
-						System.out.print(" ERROR at " + i + " " + j);
-					}
-
-				}
-				System.out.println();
-			}
+			return false;
 		}
 
 		// This is where the magic happens
 		int col = variable % 9;
 		int row = (variable / 9) % 9;
-
 //		
 //		int row = unAssigned[0];
 //		int col = unAssigned[1];
 		
 		//System.out.println(variable + " col and row is " + col + " " +row);
 		
-		ArrayList<Integer> numbers = (ArrayList<Integer>) list.get(variable).clone();
+		ArrayList<Integer> numbers = (ArrayList<Integer>) backup.get(row * 9 + col).clone();
 		// System.out.println(row + " " + col + " " + numbers.toString());
 		for (int i : numbers) {
 			board[row][col] = i;
@@ -93,27 +86,34 @@ public class HeuristicSolve {
 			// numbers.toString());
 			board[row][col] = 0;
 			//System.out.println("THIS HAPPEND AT " + row + "  " + col);
-			addBack(backup, row, col, i);
-		
+			backup =  Copy(list);
+
 		}
 
 		return false;
 	}
-
+	
+	
 	public void addBack(ArrayList<ArrayList<Integer>> list, int row, int col, int num) {
-		for (int i = 0; i < 9; i++) {
-			list.get(row * 9 + i).add(new Integer(num));
+		for(int i = 0; i < 9; i ++) {
+			if(!list.get(row* 9 + i).contains(num)) {
+			list.get(row* 9 + i).add(new Integer(num));
+			}
+			if(!list.get(i * 9 + col).contains(num)) {
 			list.get(i * 9 + col).add(new Integer(num));
+			}
 		}
-
+		
 		int xStart = row - row % 3;
 		int yStart = col - col % 3;
 		for (int x = 0; x < 3; x++) {
 			for (int y = 0; y < 3; y++) {
+				if(!list.get((xStart + x) * 9 + yStart + y).contains(num)) {
 				list.get((xStart + x) * 9 + yStart + y).add(new Integer(num));
+				}
 			}
 		}
-
+		
 	}
 
 	private void remove(ArrayList<ArrayList<Integer>> list, int row, int col, int num) {
@@ -171,6 +171,7 @@ public class HeuristicSolve {
 
 		return variable;
 
+	
 	}
 
 	public boolean findUnassigned(int[] list) {
@@ -191,11 +192,24 @@ public class HeuristicSolve {
 			for (int j = 0; j < 9; j++) {
 				if (board[i][j] != 0) {
 					remove(variables, i, j, board[i][j]);
+					variables.get(i+j).clear();
 				}
 			}
 		}
 	}
 
+	
+	private ArrayList<ArrayList<Integer>> Copy(ArrayList<ArrayList<Integer>> D) {
+		ArrayList<ArrayList<Integer>> Copy = new ArrayList<ArrayList<Integer>>(
+				D.size());
+
+		for (ArrayList<Integer> domain : D) {
+			Copy.add(new ArrayList<Integer>(domain));
+		}
+
+		return Copy;
+	}
+	
 	private boolean checkValid(int row, int col, int num) {
 
 		return checkRow(row, col, num) && checkCol(row, col, num) && checkSq(row, col, num);

@@ -8,11 +8,12 @@ public class SolverForward {
 
 	private boolean[][][] check;
 
-	// private ArrayList<Integer>[][] lol;
 	private int[][] board;
 	private int nbr = 0;
 	private ArrayList<ArrayList<Integer>> variables;
+	int level = 0;
 
+	
 	public void backForSolve(int[][] board) {
 		this.board = board;
 		check = new boolean[9][9][9];
@@ -24,12 +25,24 @@ public class SolverForward {
 		}
 
 		for (int i = 0; i < 81; i++) {
-			variables.add(new ArrayList<Integer>(numbers));
+			ArrayList<Integer> numberCopy = (ArrayList<Integer>) numbers.clone();
+			variables.add(numberCopy);
+		
 		}
-
 		doFirstCheck();
-		//System.out.println("arraylist " + variables);
-		solve(variables);
+	
+
+		boolean test = solve(variables);
+//		if(!test) {
+//			for (int i = 0; i < 9; i++) {
+//				for (int j = 0; j < 9; j++) {
+//					System.out.print(board[i][j] + " ");
+//
+//				}
+//				System.out.println();
+//		}
+//		}
+		System.out.println(test);
 		System.out.println(nbr);
 
 	}
@@ -38,10 +51,16 @@ public class SolverForward {
 	//Gör kopia på listorna så att concurrent issues undviks. 
 	//Allt bör sedan vara klart.
 	private boolean solve(ArrayList<ArrayList<Integer>> list) {
+		
+		
+		if(nbr > 10000) {
+			return false;
+		}
 		int[] unAssigned = new int[2];
 		
-		ArrayList<ArrayList<Integer>> backup = (ArrayList<ArrayList<Integer>>) list.clone();
 		
+		
+		ArrayList<ArrayList<Integer>> backup = Copy(list);
 		if (!findUnassigned(unAssigned)) {
 			//System.out.println("YES");
 			for (int i = 0; i < 9; i++) {
@@ -58,41 +77,56 @@ public class SolverForward {
 		
 		int row = unAssigned[0];
 		int col = unAssigned[1];
-		ArrayList<Integer> numbers = (ArrayList<Integer>) list.get(row * 9 + col).clone();
+		ArrayList<Integer> numbers = (ArrayList<Integer>) backup.get(row * 9 + col).clone();
 		//System.out.println(row + " " + col + " " + numbers.toString());
+
 		for (int i : numbers) {
 			board[row][col] = i;
 			remove(backup, row, col, i); //det ballar ur här
 			nbr++;
-
+			if(nbr == 23) {
+				System.out.println();
+			}
 			
+			level++;
 			if (solve(backup)) {
 				return true;
 			}
+			level--;
+			if(col == 0 && row == 0) {
+				System.out.println();
+			}
 			//System.out.println("We are at " + row + " " + col + " " + numbers.toString());
 			board[row][col] = 0;
-			addBack(backup, row, col, i);
+			backup =  Copy(list);
+		
 		}
 		
 		return false;
 	}
 	
 	
-	public void addBack(ArrayList<ArrayList<Integer>> list, int row, int col, int num) {
-		for(int i = 0; i < 9; i ++) {
-			list.get(row* 9 + i).add(new Integer(num));
-			list.get(i * 9 + col).add(new Integer(num));
-		}
-		
-		int xStart = row - row % 3;
-		int yStart = col - col % 3;
-		for (int x = 0; x < 3; x++) {
-			for (int y = 0; y < 3; y++) {
-				list.get((xStart + x) * 9 + yStart + y).add(new Integer(num));
-			}
-		}
-		
-	}
+//	public void addBack(ArrayList<ArrayList<Integer>> list, int row, int col, int num) {
+//		for(int i = 0; i < 9; i ++) {
+//			if(!list.get(row* 9 + i).contains((new Integer(num)))) {
+//			list.get(row* 9 + i).add(new Integer(num));
+//			}
+//			if(!list.get(i * 9 + col).contains((new Integer(num)))) {
+//			list.get(i * 9 + col).add(new Integer(num));
+//			}
+//		}
+//		
+//		int xStart = row - row % 3;
+//		int yStart = col - col % 3;
+//		for (int x = 0; x < 3; x++) {
+//			for (int y = 0; y < 3; y++) {
+//				if(!list.get((xStart + x) * 9 + yStart + y).contains((new Integer(num)))) {
+//				list.get((xStart + x) * 9 + yStart + y).add(new Integer(num));
+//				}
+//			}
+//		}
+//		
+//	}
 	
 	
 	private void remove(ArrayList<ArrayList<Integer>> list, int row, int col, int num) {
@@ -140,9 +174,21 @@ public class SolverForward {
 			for (int j = 0; j < 9; j++) {
 				if (board[i][j] != 0) {
 					remove(variables, i, j, board[i][j]);
+					//variables.get(i+j).clear();
 				}
 			}
 		}
+	}
+	
+	private ArrayList<ArrayList<Integer>> Copy(ArrayList<ArrayList<Integer>> D) {
+		ArrayList<ArrayList<Integer>> Copy = new ArrayList<ArrayList<Integer>>(
+				D.size());
+
+		for (ArrayList<Integer> domain : D) {
+			Copy.add(new ArrayList<Integer>(domain));
+		}
+
+		return Copy;
 	}
 
 }
