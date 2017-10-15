@@ -43,8 +43,8 @@ public class Parser {
 		}
 		
 		for(City c: result) {
-			//c.setHCost(c.distanceTo(result.getFirst()));
-			c.setHCost(0);
+			c.setHCost(c.distanceTo(result.getFirst()));
+			//c.setHCost(0);
 
 		}
 		HashMap<City, ArrayList<City>> graph = new HashMap<City, ArrayList<City>>();
@@ -54,8 +54,8 @@ public class Parser {
 			for (City q : result) {
 				if (!c.equals(q)) {
 					City toAdd = new City(q.getName(), q.getX(), q.getY());
-					//toAdd.setHCost(c.getHCost());
-					toAdd.setHCost(0);
+					toAdd.setHCost(c.getHCost());
+					//toAdd.setHCost(0);
 					neighbours.add(q);
 
 				}

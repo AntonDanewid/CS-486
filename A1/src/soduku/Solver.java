@@ -10,18 +10,22 @@ public class Solver {
 	
 	
 	
-	public void backSolve(int[][] board) {
+	public int backSolve(int[][] board) {
 		this.board = board;
 		nbr = 0;
 		boolean res = solveBack(board);
-		System.out.println("Number of assignments " + nbr);
+
 		if(!res) {
-			System.out.println("no solution found");
+
+			return 0;
 		}
+		return nbr;
 	}
 
 
 
+	
+	//Solves soduku by backtracking. 
 	private boolean solveBack(int[][] board) {
 		if(nbr > 10000) {
 			return false;
@@ -32,10 +36,10 @@ public class Solver {
 		if(!findUnassigned(unAssigned)) {
 			for(int i = 0; i < 9; i ++) {
 				for(int j = 0; j < 9; j++) {
-					System.out.print(board[i][j] + " ");
+					//System.out.print(board[i][j] + " ");
 					
 				}
-				System.out.println();
+				//System.out.println();
 			}
 			return true; 
 		}
@@ -56,46 +60,7 @@ public class Solver {
 		}
 		return false;
 	}
-	
-	
-	
-	
-	private boolean backForSolveRec() {
-	int[] unAssigned = new int[2];
-		
-		if(!findUnassigned(unAssigned)) {
-			System.out.println("YES");
-			for(int i = 0; i < 9; i ++) {
-				for(int j = 0; j < 9; j++) {
-					System.out.print(board[i][j] + " ");
-					
-				}
-				System.out.println();
-			}
-			return true; 
-		}
-		int row = unAssigned[0];
-		int col = unAssigned[1];
-		
-		for(int i = 1; i < 10; i++) {
-			if(checkValid(row, col, i)) {
-				
-				
-				board[row][col] = i;
-				nbr++;
-				if(solveBack(board)) {
-					return true;
-				}
-				board[row][col] = 0;
-			}
-		}
-		return false;
-	}
-	
-	
-	public void backForHeuSolve() {
-		
-	}
+
 	
 	private boolean checkValid(int row, int col, int num) {
 		
@@ -136,6 +101,9 @@ public class Solver {
 		
 	}
 
+	
+	
+	//Finds the first unassinged value
 	public boolean findUnassigned(int[] list) {
 		for(int i = 0; i <9; i++) {
 			for(int j = 0; j < 9; j++) {

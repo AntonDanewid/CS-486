@@ -14,7 +14,9 @@ public class SolverForward {
 	int level = 0;
 
 	
-	public void backForSolve(int[][] board) {
+	
+	//Setup
+	public int backForSolve(int[][] board) {
 		this.board = board;
 		check = new boolean[9][9][9];
 		nbr = 0;
@@ -24,6 +26,8 @@ public class SolverForward {
 			numbers.add(i);
 		}
 
+		
+		//Creates the list of valid assignments.
 		for (int i = 0; i < 81; i++) {
 			ArrayList<Integer> numberCopy = (ArrayList<Integer>) numbers.clone();
 			variables.add(numberCopy);
@@ -33,24 +37,16 @@ public class SolverForward {
 	
 
 		boolean test = solve(variables);
-//		if(!test) {
-//			for (int i = 0; i < 9; i++) {
-//				for (int j = 0; j < 9; j++) {
-//					System.out.print(board[i][j] + " ");
-//
-//				}
-//				System.out.println();
-//		}
-//		}
-		System.out.println(test);
-		System.out.println(nbr);
+		
+		if(!test) {
+			return 0;
+		}
+		return nbr;
 
 	}
 
-	
-	//Gör kopia på listorna så att concurrent issues undviks. 
-	//Allt bör sedan vara klart.
-	private boolean solve(ArrayList<ArrayList<Integer>> list) {
+		//The recursive solving method
+		private boolean solve(ArrayList<ArrayList<Integer>> list) {
 		
 		
 		if(nbr > 10000) {
@@ -65,7 +61,7 @@ public class SolverForward {
 			//System.out.println("YES");
 			for (int i = 0; i < 9; i++) {
 				for (int j = 0; j < 9; j++) {
-					System.out.print(board[i][j] + " ");
+					//.out.print(board[i][j] + " ");
 
 				}
 				System.out.println();
@@ -78,24 +74,24 @@ public class SolverForward {
 		int row = unAssigned[0];
 		int col = unAssigned[1];
 		ArrayList<Integer> numbers = (ArrayList<Integer>) backup.get(row * 9 + col).clone();
-		//System.out.println(row + " " + col + " " + numbers.toString());
 
+
+		//This method is exactly the same as the backtracking, except the for loop under
+		//It only picks numbers that does not conflict with other assignments.
 		for (int i : numbers) {
 			board[row][col] = i;
-			remove(backup, row, col, i); //det ballar ur här
+			//Removes the current number from the variable list, so that it dosnt get pciked
+			//by future iterations
+			remove(backup, row, col, i); 
 			nbr++;
-			if(nbr == 23) {
-				System.out.println();
-			}
+			
 			
 			level++;
 			if (solve(backup)) {
 				return true;
 			}
 			level--;
-			if(col == 0 && row == 0) {
-				System.out.println();
-			}
+		
 			//System.out.println("We are at " + row + " " + col + " " + numbers.toString());
 			board[row][col] = 0;
 			backup =  Copy(list);
@@ -106,34 +102,15 @@ public class SolverForward {
 	}
 	
 	
-//	public void addBack(ArrayList<ArrayList<Integer>> list, int row, int col, int num) {
-//		for(int i = 0; i < 9; i ++) {
-//			if(!list.get(row* 9 + i).contains((new Integer(num)))) {
-//			list.get(row* 9 + i).add(new Integer(num));
-//			}
-//			if(!list.get(i * 9 + col).contains((new Integer(num)))) {
-//			list.get(i * 9 + col).add(new Integer(num));
-//			}
-//		}
-//		
-//		int xStart = row - row % 3;
-//		int yStart = col - col % 3;
-//		for (int x = 0; x < 3; x++) {
-//			for (int y = 0; y < 3; y++) {
-//				if(!list.get((xStart + x) * 9 + yStart + y).contains((new Integer(num)))) {
-//				list.get((xStart + x) * 9 + yStart + y).add(new Integer(num));
-//				}
-//			}
-//		}
-//		
-//	}
-	
-	
+
+		
+	//Removes the valid from all the cells in row row, and column col
 	private void remove(ArrayList<ArrayList<Integer>> list, int row, int col, int num) {
 		removeFromSquare(list, row, col, num);
 		removeFromLineRow(list, row, col, num);
 	}
 
+	
 	private void removeFromLineRow(ArrayList<ArrayList<Integer>> list, int row, int col, int num) {
 		for(int i = 0; i < 9; i ++) {
 			list.get(row* 9 + i).remove(new Integer(num));
@@ -169,6 +146,7 @@ public class SolverForward {
 	}
 
 
+	//Does the first removal of variables that conflict
 	private void doFirstCheck() {
 		for (int i = 0; i < 9; i++) {
 			for (int j = 0; j < 9; j++) {
